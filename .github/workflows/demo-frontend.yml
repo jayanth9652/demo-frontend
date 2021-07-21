@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' 
     #strategy:
-     # matrix:
-      #  node-version: [12.x]
+     #matrix:
+      #node-version: [12.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -20,11 +20,11 @@ jobs:
         repository: jayanth9652/anudan-app 
         token: ${{ secrets.MY_PAT }}
         ref: dev
-    #- name: Use Node.js ${{ matrix.node-version }}
-     # uses: actions/setup-node@v2
-      #with:
-       # node-version: ${{ matrix.node-version }}
-        #cache: 'npm'
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+       node-version: ${{ matrix.node-version }}
+       cache: 'npm'
     - run: pwd
     #- run: ls -lrt 
     #- run: node --version
