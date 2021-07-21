@@ -30,9 +30,9 @@ jobs:
     #- run: node --version
     #- run: npm --version 
     #- run: java -version 
-    - run: npm install -g @angular/cli@latest
+    #- run: npm install -g @angular/cli@latest
     #- run: ng version
-    #- run: npm install --save-dev @angular-devkit/build-angular
+    - run: npm install --save-dev @angular-devkit/build-angular
     #- run: npm ci
     #- run: ng build --prod --no-aot --build-optimizer false
     #- run: npm run build --if-present
