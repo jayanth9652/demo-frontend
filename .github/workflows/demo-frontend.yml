@@ -38,7 +38,7 @@ jobs:
     #- run: npm run build --if-present
     #- run: ng build --aot --output-hashing=all --configuration=production
     #- run: ng build --aot --output-hashing=all --configuration=production --build-optimizer false
-    - run: npm install
+    - run: npm ci
     - run: ng build --aot --output-hashing=all --prod
     #- run: ng build --aot --output-hashing=all --configuration=production
     #- run: ng build --stats-json
