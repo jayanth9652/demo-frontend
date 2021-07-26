@@ -62,6 +62,11 @@ jobs:
             done 
             ls -lrt
             pwd 
-            cat /home/runner/work/demo-frontend/demo-frontend/releaseNotes
+     - name: list file final
+       run: | 
+       pwd
+       ls -lrt
+
+        cat /home/runner/work/demo-frontend/demo-frontend/releaseNotes
 
 
