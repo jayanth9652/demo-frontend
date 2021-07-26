@@ -59,5 +59,8 @@ jobs:
                     echo $temp | awk '{$1="";$2="";print}' >> releaseNotes.txt
                 fi
             fi
-            done
+            done 
+            ls -lrt
+            pwd 
+            
 
