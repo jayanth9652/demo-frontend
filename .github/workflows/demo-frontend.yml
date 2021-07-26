@@ -62,11 +62,11 @@ jobs:
             done 
             ls -lrt
             pwd 
+            cat releaseNotes.txt
      - name: list file final
        run: | 
-       pwd
-       ls -lrt
-
-        cat /home/runner/work/demo-frontend/demo-frontend/releaseNotes
+        pwd
+        ls -lrt
+        cat /home/runner/work/demo-frontend/demo-frontend/releaseNotes.txt
 
 
