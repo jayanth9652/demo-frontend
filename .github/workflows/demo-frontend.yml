@@ -38,48 +38,12 @@ jobs:
           name: Anudan-Release     
 
      - name: list files
-       run: | 
-            ls -lrt
-            pwd   
+       run: |  
             #!/bin/bash
-            #This script will generate the release notes from the commits
-            #It will discard prints oF automatic Merges and Pull Requests commits.
-            #It will show all the Commits date wise and sorted
-            #TAG_VER=$working_dir/release/release.json
-            PREVIOUS_DEPLOYMENT_RLE=`cat release.json | cut -d "," -f2 | cut -d ":" -f2 | sed 's/"//g'`
-            CURRENT_DEPLOYMENT_RLE=`cat release.json | cut -d "," -f1 | cut -d ":" -f2 | sed 's/"//g'`
-            DATE=
-            git log -- $PREVIOUS_DEPLOYMENT_RLE..$CURRENT_DEPLOYMENT_RLE --pretty=format:"%ad || %h || %s || Author:%an " --date=short | sort -r | while read line
-            do
-            temp=`echo $line | egrep -v '(Resolve Conflict From)'`
-            if [ "$temp" = "" ]
-            then
-                continue
-            else
-                NEWDATE=`echo $temp |  awk  '{print $1}'`
-                if [ "$NEWDATE" = "$DATE" ]
-                then
-                    echo $temp | awk '{$1="";$2="";print}' >> gms-service-release-notes.txt
-                else
-                    echo >> gms-service-release-notes.txt
-                    DATE=$NEWDATE
-                    echo `date --date=$DATE +%d-%B-%Y` >> gms-service-release-notes.txt
-                    echo $temp | awk '{$1="";$2="";print}' >> gms-service-release-notes.txt
-                    sudo echo "hii from gms-service" >> gms-service-release-notes.txt
-                fi
-            fi
-            done
-            ls -lrt
-            pwd  
-            #!/bin/bash
-            #This script will generate the release notes from the commits
-            #It will discard prints oF automatic Merges and Pull Requests commits. 
-            #It will show all the Commits date wise and sorted
-
             DATE=
             git log --pretty=format:"%ad || %h || %s || Author:%an " --date=short | sort -r | while read line
             do
-            temp=`echo $line | egrep -v '(Automatic merge from|Merge pull request|Merge conflict from|Resolve Conflict From)'`
+            temp=`echo $line | egrep -v '(Resolve Conflict From)'`
             if [ "$temp" = "" ]
             then
                 continue
