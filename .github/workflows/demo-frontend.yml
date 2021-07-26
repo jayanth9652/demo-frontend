@@ -23,6 +23,7 @@ jobs:
 
   anudan-app:
     runs-on: ubuntu-latest
+    needs: release-repo
     if: github.ref == 'refs/heads/main' 
     steps:
      - name: check out gms-service master
