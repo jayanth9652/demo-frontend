@@ -5,51 +5,69 @@ on:
     branches:
       - main
 jobs:
-  DEV-Frontend-Build:
+  release-repo:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: jayanth9652/release   
+          token: ${{ secrets.MY_PAT }}
+          ref: master 
+      - name: creating release.json artifact for tagging master branch
+        uses: actions/upload-artifact@v2
+        with:
+          name: Anudan-Release
+          path: release.json
+          retention-days: 5     
 
+  anudan-app:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' 
-    strategy:
-      matrix:
-       node-version: [12.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
     steps:
-    - uses: actions/checkout@v2
-      with:
-        repository: jayanth9652/anudan-app 
-        token: ${{ secrets.MY_PAT }}
-        ref: dev
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-       node-version: ${{ matrix.node-version }}
-       cache: 'npm'
-    - run: pwd
-    #- run: ls -lrt 
-    #- run: node --version
-    #- run: npm --version 
-    #- run: java -version 
-    - run: npm install -g @angular/cli@latest
-    #- run: ng version
-    - run: npm install --save-dev @angular-devkit/build-angular
-    #- run: npm ci
-    #- run: ng build --prod --no-aot --build-optimizer false
-    #- run: npm run build --if-present
-    #- run: ng build --aot --output-hashing=all --configuration=production
-    #- run: ng build --aot --output-hashing=all --configuration=production --build-optimizer false
-    - run: npm ci
-    #- run: ng build --aot --output-hashing=all --prod
-    - run: ng build --aot --output-hashing=all --configuration=production
-    #- run: ng build --stats-json
-    #- run: ng build --stats-json --source-map=false
-    #- run: ng build --source-map=false
-    #- run: ng --build optimizer=false 
-    - run: ls -lrt dist   
+     - name: check out gms-service master
+       uses: actions/checkout@master
+       with:
+          repository: jayanth9652/gms-service  
+          token: ${{ secrets.MY_PAT }}          
+          ref: master 
+     - name: Anudan Release artifact downloading      
+       uses: actions/download-artifact@v2
+       with:
+          name: Anudan-Release     
 
-    - name: anudan frontend artifact uploading
-      uses: actions/upload-artifact@v2
-      with:
-          name: dist
-          path: dist/**
-          retention-days: 5
+     - name: list files
+       run: | 
+            ls -lrt
+            pwd   
+            #!/bin/bash
+            #This script will generate the release notes from the commits
+            #It will discard prints oF automatic Merges and Pull Requests commits.
+            #It will show all the Commits date wise and sorted
+            #TAG_VER=$working_dir/release/release.json
+            PREVIOUS_DEPLOYMENT_RLE=`cat release.json | cut -d "," -f2 | cut -d ":" -f2 | sed 's/"//g'`
+            CURRENT_DEPLOYMENT_RLE=`cat release.json | cut -d "," -f1 | cut -d ":" -f2 | sed 's/"//g'`
+            DATE=
+            git log -- $PREVIOUS_DEPLOYMENT_RLE..$CURRENT_DEPLOYMENT_RLE --pretty=format:"%ad || %h || %s || Author:%an " --date=short | sort -r | while read line
+            do
+            temp=`echo $line | egrep -v '(Resolve Conflict From)'`
+            if [ "$temp" = "" ]
+            then
+                continue
+            else
+                NEWDATE=`echo $temp |  awk  '{print $1}'`
+                if [ "$NEWDATE" = "$DATE" ]
+                then
+                    echo $temp | awk '{$1="";$2="";print}' >> gms-service-release-notes.txt
+                else
+                    echo >> gms-service-release-notes.txt
+                    DATE=$NEWDATE
+                    echo `date --date=$DATE +%d-%B-%Y` >> gms-service-release-notes.txt
+                    echo $temp | awk '{$1="";$2="";print}' >> gms-service-release-notes.txt
+                    sudo echo "hii from gms-service" >> gms-service-release-notes.txt
+                fi
+            fi
+            done
+            ls -lrt
+            pwd  
+
