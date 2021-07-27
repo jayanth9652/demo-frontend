@@ -68,18 +68,24 @@ jobs:
         pwd
         ls -lrt
         cat /home/runner/work/demo-frontend/demo-frontend/releaseNotes.txt
-     - name: Send email
-       uses: AlexisMateo/sendmail-action@5
-       with:
-          smtp-server: ${{ secrets.SMTP_SERVER }}
-          smtp-server-port: ${{ secrets.SMTP_SERVER_PORT }}
-          auth-user: ${{ secrets.AUTH_USER }}
-          auth-password: ${{secrets.EMAIL_PASSWORD }}
-          subject: correciones a ${{github.repository}}
-          body: ${{github.context.payload}}
-          from: ${{ secrets.EMAIL_FROM }}
-          to: ${{ secrets.EMAIL_RECIVER }}
-          is-tls: true
-          commit-message: true
+
+  Notify-on-email:
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [release-repo, anudan-app]
+    name: EmailNotify
+    steps:
+      - name: Send some mail
+        uses: wadeww/send-email-action@master
+        with:
+          server_address: smtp.gmail.com
+          port: ${{ secrets.SMTP_SERVER_PORT }}
+          username: ${{ secrets.AUTH_USER }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: Workflow finished
+          body: ${{github.repository}} 1)Buildjob- ${{needs.release-repo.result}} 2)Test- ${{needs.anudan-app.result}} 
+          to: prabhu@socialalpha.org
+          from: donotreply@anudan.org
+
 
 
