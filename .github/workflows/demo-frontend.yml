@@ -68,5 +68,18 @@ jobs:
         pwd
         ls -lrt
         cat /home/runner/work/demo-frontend/demo-frontend/releaseNotes.txt
+     - name: Send email
+       uses: AlexisMateo/sendmail-action@5
+       with:
+          smtp-server: ${{ secrets.SMTP_SERVER }}
+          smtp-server-port: ${{ secrets.SMTP_SERVER_PORT }}
+          auth-user: ${{ secrets.AUTH_USER }}
+          auth-password: ${{secrets.EMAIL_PASSWORD }}
+          subject: correciones a ${{github.repository}}
+          body: ${{github.context.payload}}
+          from: ${{ secrets.EMAIL_FROM }}
+          to: ${{ secrets.EMAIL_RECIVER }}
+          is-tls: true
+          commit-message: true
 
 
