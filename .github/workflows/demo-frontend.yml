@@ -21,58 +21,11 @@ jobs:
           path: release.json
           retention-days: 5     
 
-  anudan-app:
-    runs-on: ubuntu-latest
-    needs: release-repo
-    if: github.ref == 'refs/heads/main' 
-    steps:
-     - name: check out gms-service master
-       uses: actions/checkout@master
-       with:
-          repository: jayanth9652/gms-service  
-          token: ${{ secrets.MY_PAT }}          
-          ref: master 
-     - name: Anudan Release artifact downloading      
-       uses: actions/download-artifact@v2
-       with:
-          name: Anudan-Release     
-
-     - name: list files
-       run: |  
-            #!/bin/bash
-            DATE=
-            git log --pretty=format:"%ad || %h || %s || Author:%an " --date=short | sort -r | while read line
-            do
-            temp=`echo $line | egrep -v '(Resolve Conflict From)'`
-            if [ "$temp" = "" ]
-            then
-                continue
-            else
-                NEWDATE=`echo $temp |  awk  '{print $1}'`
-                if [ "$NEWDATE" = "$DATE" ]
-                then
-                    echo $temp | awk '{$1="";$2="";print}' >> releaseNotes.txt
-                else
-                    echo >> releaseNotes.txt
-                    DATE=$NEWDATE
-                    echo `date --date=$DATE +%d-%B-%Y` >> releaseNotes.txt
-                    echo $temp | awk '{$1="";$2="";print}' >> releaseNotes.txt
-                fi
-            fi
-            done 
-            ls -lrt
-            pwd 
-            cat releaseNotes.txt
-     - name: list file final
-       run: | 
-        pwd
-        ls -lrt
-        cat /home/runner/work/demo-frontend/demo-frontend/releaseNotes.txt
 
   Notify-on-email:
     runs-on: ubuntu-latest
     if: always()
-    needs: [release-repo, anudan-app]
+    needs: [release-repo]
     name: EmailNotify
     steps:
       - name: Send some mail
@@ -84,7 +37,7 @@ jobs:
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: Workflow finished
           body: ${{github.repository}} 1)Buildjob- ${{needs.release-repo.result}} 2)Test- ${{needs.anudan-app.result}} 
-          to: test-1c0aaa80@appmaildev.com
+          to: test-3f478479@appmaildev.com
           from: donotreply@anudan.org
            
 
