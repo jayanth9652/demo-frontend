@@ -37,7 +37,7 @@ jobs:
           password: ${{ secrets.EMAIL_PASSWORD }}
           subject: Workflow finished
           body: ${{github.repository}} 1)Buildjob- ${{needs.release-repo.result}} 2)Test- ${{needs.anudan-app.result}} 
-          to:  test-9cc1a5d1@appmaildev.com
+          to: test-50fdf07a@appmaildev.com
           from: donotreply@anudan.org
            
 
