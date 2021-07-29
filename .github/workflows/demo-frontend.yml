@@ -38,7 +38,7 @@ jobs:
           subject: Workflow finished
           body: ${{github.repository}} 1)Buildjob- ${{needs.release-repo.result}} 2)Test- ${{needs.anudan-app.result}} 
           to: karniprabhu28@gmail.com
-          from: donotreply@anudan.org
+          from: donotreply@anudan.org 
            
 
 
